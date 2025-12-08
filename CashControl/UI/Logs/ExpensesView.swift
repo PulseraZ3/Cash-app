@@ -1,39 +1,42 @@
-//
-//  ExpensesView.swift
-//  CashControl
-//
-//  Created by LEONARDO FAVIO  on 7/12/25.
-//
+    //
+    //  ExpensesView.swift
+    //  CashControl
+    //
+    //  Created by LEONARDO FAVIO  on 7/12/25.
+    //
 
-import SwiftUI
+    import SwiftUI
 
 struct ExpensesView: View {
+    
     @Environment(\.managedObjectContext) private var context
+    @State private var showingFormulario = false
+    
     var body: some View {
         NavigationStack {
             VStack {
                 Spacer()
             }
             .toolbar {
-
-                // Título a la izquierda
                 ToolbarItem(placement: .principal) {
                     Text("Expenses Logs")
                         .font(.headline)
                         .fontWeight(.bold)
                 }
 
-                // Botón Add a la derecha
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink {
-                        FormularioMovimientoView(context: context)
-                    } label: {
+                    Button(action: {
+                        showingFormulario = true
+                    }) {
                         Image(systemName: "plus")
                     }
                 }
             }
+            .sheet(isPresented: $showingFormulario) {
+                FormularioMovimientoView(context: context)
+                    .presentationDetents([.medium, .large], selection: .constant(.large))
+                    .presentationDragIndicator(.hidden)
+            }
         }
-
-        
     }
 }

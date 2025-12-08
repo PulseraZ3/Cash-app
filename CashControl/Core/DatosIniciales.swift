@@ -54,15 +54,18 @@ struct DatosIniciales {
     // funciones para crear los items
         private static func createTipoMovimiento(nombre: String, context: NSManagedObjectContext) {
             let tipo = TipoMovimiento(context: context)
+            tipo.id = UUID()
             tipo.nombre = nombre
         }
 
         private static func createCategoria(nombre: String, context: NSManagedObjectContext) {
             let categoria = Categoria(context: context)
+            categoria.id = UUID()
             categoria.nombre = nombre
         }
         private static func createCuenta(nombre: String, context: NSManagedObjectContext) {
             let cuenta = Cuenta(context: context)
+            cuenta.id = UUID()
             cuenta.nombre = nombre
         }
 }

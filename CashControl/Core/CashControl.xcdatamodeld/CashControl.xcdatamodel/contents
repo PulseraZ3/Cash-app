@@ -15,9 +15,9 @@
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="monto" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="nota" optional="YES" attributeType="String"/>
-        <relationship name="categoria" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Categoria" inverseName="movimientos" inverseEntity="Categoria"/>
-        <relationship name="cuenta" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Cuenta" inverseName="movimientos" inverseEntity="Cuenta"/>
-        <relationship name="tipo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TipoMovimiento" inverseName="movimientos" inverseEntity="TipoMovimiento"/>
+        <relationship name="categoria" maxCount="1" deletionRule="Nullify" destinationEntity="Categoria" inverseName="movimientos" inverseEntity="Categoria"/>
+        <relationship name="cuenta" maxCount="1" deletionRule="Nullify" destinationEntity="Cuenta" inverseName="movimientos" inverseEntity="Cuenta"/>
+        <relationship name="tipo" maxCount="1" deletionRule="Nullify" destinationEntity="TipoMovimiento" inverseName="movimientos" inverseEntity="TipoMovimiento"/>
     </entity>
     <entity name="TipoMovimiento" representedClassName="TipoMovimiento" syncable="YES" codeGenerationType="class">
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>

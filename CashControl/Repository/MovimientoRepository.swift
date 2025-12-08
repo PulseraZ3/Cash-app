@@ -42,7 +42,7 @@ final class MovimientoRepository: MovimientoRepositoryProtocol {
             movimiento.categoria = categoria
             movimiento.tipo = tipo
             movimiento.cuenta = cuenta
-            movimiento.nota = nota
+            movimiento.nota = nota ?? ""
             try context.save()
         }
 }

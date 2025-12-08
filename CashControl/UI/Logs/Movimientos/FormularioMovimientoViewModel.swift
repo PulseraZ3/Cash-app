@@ -16,36 +16,50 @@ final class FormularioMovimientoViewModel: ObservableObject {
     @Published var categoriaSeleccionada: Categoria?
     @Published var tipoSeleccionado: TipoMovimiento?
     @Published var cuentaSeleccionada: Cuenta?
-    
+    @Published var notas: String? = nil
     private let repository: MovimientoRepository
+    private let context: NSManagedObjectContext
     
     init(context: NSManagedObjectContext){
+        self.context = context
         self.repository = MovimientoRepository(context: context)
-    }
+        
+        if let firstCategoria = try? context.fetch(Categoria.fetchRequest()).first {
+                    self.categoriaSeleccionada = firstCategoria
+                }
+        if let firstTipo = try? context.fetch(TipoMovimiento.fetchRequest()).first {
+            self.tipoSeleccionado = firstTipo
+        }
+                
+        if let firstCuenta = try? context.fetch(Cuenta.fetchRequest()).first {
+            self.cuentaSeleccionada = firstCuenta
+        }
+}
     
     func guardarMovimiento(){
-        guard
-            let montoDouble = Double(monto),
-            montoDouble > 0,
-            let categoria = categoriaSeleccionada,
-            let tipo = tipoSeleccionado,
-            let cuenta = cuentaSeleccionada
-        else{
-            print("Formulario invalido")
-            return
-        }
-        do{
-            try repository.guardarMovimiento(
-                monto: montoDouble,
-                fecha: fecha,
-                categoria: categoria,
-                tipo: tipo,
-                cuenta: cuenta
-                , nota: ""
-            )
-            print("movimiento guardado")
-        } catch{
-            print("Error al guardar")
+            guard
+                let montoDouble = Double(monto),
+                montoDouble > 0,
+                let categoria = categoriaSeleccionada,
+                let tipo = tipoSeleccionado,
+                let cuenta = cuentaSeleccionada
+            else{
+                print("Formulario invalido")
+                return
+            }
+            
+            do{
+                try repository.guardarMovimiento(
+                    monto: montoDouble,
+                    fecha: fecha,
+                    categoria: categoria,
+                    tipo: tipo,
+                    cuenta: cuenta,
+                    nota: notas ?? "" 
+                )
+                print("movimiento guardado")
+            } catch let error as NSError {
+                print("Error al guardar movimiento: \(error), \(error.userInfo)")
+            }
         }
     }
-}

@@ -42,13 +42,45 @@ struct FormularioMovimientoView: View {
     }
     
     var body: some View{
-        NavigationStack{
-            Form{
-                Section(header: Text("Monto")){
-                    TextField("Ej: 25.50", text: $viewModel.monto)
-                        .keyboardType(.decimalPad)
+        NavigationStack {
+                    Form {
+                        TextField("Monto (Ej: 25.50)", text: $viewModel.monto)
+                            .keyboardType(.decimalPad)
+
+                        DatePicker("Fecha", selection: $viewModel.fecha, displayedComponents: .date)
+                        
+                        Picker("Tipo de movimiento", selection: $viewModel.tipoSeleccionado) {
+                            ForEach(tipos, id: \.self) { tipo in
+                                Text(tipo.nombre ?? "").tag(tipo as TipoMovimiento?)
+                            }
+                        }
+                        .pickerStyle(.menu)
+
+                        Picker("Categoría", selection: $viewModel.categoriaSeleccionada) {
+                            ForEach(categorias, id: \.self) { categoria in
+                                Text(categoria.nombre ?? "").tag(categoria as Categoria?)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        Picker("Cuenta", selection: $viewModel.cuentaSeleccionada) {
+                            ForEach(cuentas, id: \.self) { cuenta in
+                                Text(cuenta.nombre ?? "").tag(cuenta as Cuenta?)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        TextField("Notas (Opcional)", text: Binding(
+                            get: { viewModel.notas ?? "" },
+                            set: { viewModel.notas = $0.isEmpty ? nil : $0 }
+                        ))
+                        Section {
+                            Button("Guardar") {
+                                viewModel.guardarMovimiento()
+                                dismiss()
+                            }
+                        }
+                    }
+                    .navigationTitle("New Expense Log")
+                    .navigationBarTitleDisplayMode(.inline)
                 }
             }
         }
-    }
-}
