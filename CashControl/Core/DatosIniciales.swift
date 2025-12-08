@@ -21,16 +21,16 @@ struct DatosIniciales {
         
         if let count = try? context.count(for: categoriaRequest), count == 0{
             let categorias = [
-                "Comida",
-                "Transporte",
-                "Servicios",
-                "Entretenimiento",
-                "Salud",
-                "Educacion",
-                "Otros"
+                ("Comida", "fork.knife"),
+                    ("Transporte", "car.fill"),
+                    ("Servicios", "bolt.fill"),
+                    ("Entretenimiento", "gamecontroller.fill"),
+                    ("Salud", "heart.fill"),
+                    ("Educacion", "book.fill"),
+                    ("Otros", "questionmark.circle")
             ]//creamos la categoria con los nombres anterior mencionados $0 = primer parametro
             categorias.forEach{
-                createCategoria(nombre: $0, context: context)
+                createCategoria(nombre: $0, icon: $1 ,context: context)
             }
         }
         let nombreCuenta: NSFetchRequest<Cuenta> = Cuenta.fetchRequest()
@@ -58,11 +58,12 @@ struct DatosIniciales {
             tipo.nombre = nombre
         }
 
-        private static func createCategoria(nombre: String, context: NSManagedObjectContext) {
-            let categoria = Categoria(context: context)
-            categoria.id = UUID()
-            categoria.nombre = nombre
-        }
+    private static func createCategoria(nombre: String, icon: String, context: NSManagedObjectContext) {
+        let categoria = Categoria(context: context)
+        categoria.id = UUID()
+        categoria.nombre = nombre
+        categoria.icon = icon
+    }
         private static func createCuenta(nombre: String, context: NSManagedObjectContext) {
             let cuenta = Cuenta(context: context)
             cuenta.id = UUID()

@@ -45,4 +45,18 @@ final class MovimientoRepository: MovimientoRepositoryProtocol {
             movimiento.nota = nota ?? ""
             try context.save()
         }
+    
+    func getAllMovimientos() -> [Movimiento] {
+        let request: NSFetchRequest<Movimiento> = Movimiento.fetchRequest()
+        let sortDescriptor = NSSortDescriptor(key:"fecha", ascending: false)
+        request.sortDescriptors = [sortDescriptor]
+        
+        do {
+            return try context.fetch(request)
+        } catch {
+            print("Error al obtener movimiento: \(error)")
+            return []
+        }
+    }
+    
 }

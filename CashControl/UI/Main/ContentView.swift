@@ -8,13 +8,14 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(\.managedObjectContext) private var context
     var body: some View {
         TabView{
             DashboardView()
                 .tabItem{
                     Label("Dashboard", systemImage: "chart.pie")
                 }
-            ExpensesView()
+            ExpensesView(context: context)
                 .tabItem{
                     Label("Logs", systemImage: "tray")
                 }
