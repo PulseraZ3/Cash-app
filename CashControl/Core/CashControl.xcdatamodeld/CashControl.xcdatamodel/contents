@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="24411" systemVersion="24G84" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+    <entity name="Categoria" representedClassName="Categoria" syncable="YES" codeGenerationType="class">
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="nombre" attributeType="String"/>
+        <relationship name="movimientos" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Movimiento" inverseName="categoria" inverseEntity="Movimiento"/>
+    </entity>
+    <entity name="Cuenta" representedClassName="Cuenta" syncable="YES" codeGenerationType="class">
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="nombre" attributeType="String"/>
+        <relationship name="movimientos" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Movimiento" inverseName="cuenta" inverseEntity="Movimiento"/>
+    </entity>
+    <entity name="Movimiento" representedClassName="Movimiento" syncable="YES" codeGenerationType="class">
+        <attribute name="fecha" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="monto" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="nota" optional="YES" attributeType="String"/>
+        <relationship name="categoria" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Categoria" inverseName="movimientos" inverseEntity="Categoria"/>
+        <relationship name="cuenta" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Cuenta" inverseName="movimientos" inverseEntity="Cuenta"/>
+        <relationship name="tipo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TipoMovimiento" inverseName="movimientos" inverseEntity="TipoMovimiento"/>
+    </entity>
+    <entity name="TipoMovimiento" representedClassName="TipoMovimiento" syncable="YES" codeGenerationType="class">
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="nombre" attributeType="String"/>
+        <relationship name="movimientos" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Movimiento" inverseName="tipo" inverseEntity="Movimiento"/>
+    </entity>
+</model>
