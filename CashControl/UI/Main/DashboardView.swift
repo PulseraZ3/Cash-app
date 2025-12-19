@@ -8,13 +8,30 @@
 import SwiftUI
 
 struct DashboardView: View{
-    var body: some View{
-        VStack(alignment: .leading, spacing: 4 ){
-            Text("Total expenses")
-                .font(.headline)
-                .fontWeight(.bold)
+    @Environment(\.managedObjectContext) private var context
+        @StateObject private var vm: DashboardViewModel
+        
+        init() {
+            _vm = StateObject(wrappedValue: DashboardViewModel(context: PersistenceController.shared.context))
         }
-        .padding(.horizontal)
-        .padding(.top, 8)
+        
+        var body: some View {
+            NavigationStack {
+                List(vm.categoriasTotales) { item in
+                    HStack {
+                        Image(systemName: item.categoria.icon ?? "questionmark.circle")
+                            .frame(width: 30)
+                        Text(item.categoria.nombre ?? "Sin nombre")
+                            .font(.headline)
+                        Spacer()
+                        Text("$\(item.total, specifier: "%.2f")")
+                            .font(.title3)
+                            .fontWeight(.bold)
+                            .foregroundColor(.red)
+                    }
+                    .padding(.vertical, 5)
+                }
+                .navigationTitle("Dashboard")
+            }
+        }
     }
-}

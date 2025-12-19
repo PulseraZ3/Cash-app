@@ -18,6 +18,7 @@ protocol MovimientoRepositoryProtocol {
         nota: String?
     ) throws
 }
+
 final class MovimientoRepository: MovimientoRepositoryProtocol {
     
     private let context: NSManagedObjectContext
@@ -59,4 +60,15 @@ final class MovimientoRepository: MovimientoRepositoryProtocol {
         }
     }
     
+    func getAllCategory() -> [Categoria] {
+        let request : NSFetchRequest<Categoria> = Categoria.fetchRequest()
+        return (try? context.fetch(request)) ?? []
+    }
+    
+    func totalCategorias(_ categoria: Categoria) -> Double {
+        let request: NSFetchRequest<Movimiento> = Movimiento.fetchRequest()
+        request.predicate = NSPredicate(format: "categoria == %@", categoria)
+        let movimiento = (try? context.fetch(request)) ?? []
+        return movimiento.reduce(0) { $0 + $1.monto }
+    }
 }

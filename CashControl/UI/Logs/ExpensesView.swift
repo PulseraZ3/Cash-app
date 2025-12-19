@@ -45,6 +45,7 @@ struct ExpensesView: View {
                             .foregroundColor(movimiento.tipo?.nombre == "Gasto" ? .red : .green)
                     }
                     .padding(.vertical, 4)
+                    .listRowSeparator(.hidden)
                 }
             }
             .listStyle(.plain)
@@ -68,10 +69,6 @@ struct ExpensesView: View {
     }
 
     private func loadMovimientos() {
-        do {
-            movimientos = try repository.getAllMovimientos()
-        } catch {
-            print("Error cargando movimientos:", error.localizedDescription)
-        }
+        movimientos = repository.getAllMovimientos()
     }
 }
