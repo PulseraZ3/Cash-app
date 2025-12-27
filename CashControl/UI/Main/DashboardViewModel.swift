@@ -33,3 +33,23 @@ final class DashboardViewModel: ObservableObject {
     }
 }
 
+extension DashboardViewModel {
+    var totalGeneral: Double {
+        categoriasTotales.reduce(0) { $0 + $1.total }
+    }
+}
+
+extension DashboardViewModel {
+    
+    func disponible(presupuesto: Double) -> Double {
+        presupuesto - totalGeneral
+    }
+    
+    func porcentajeDisponible(presupuesto: Double) -> Double {
+        guard presupuesto > 0 else { return 1 }
+        return disponible(presupuesto: presupuesto) / presupuesto
+    }
+}
+
+
+

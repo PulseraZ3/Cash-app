@@ -3,6 +3,8 @@ import CoreData
 
 struct ExpensesView: View {
     @Environment(\.managedObjectContext) private var context
+    @Environment(\.dismiss) var dismiss
+    
     @State private var showingFormulario = false
     
     // Lista de movimientos
@@ -17,6 +19,7 @@ struct ExpensesView: View {
 
     var body: some View {
         NavigationStack {
+            
             List {
                 ForEach(movimientos, id: \.id) { movimiento in
                     HStack {
@@ -50,6 +53,7 @@ struct ExpensesView: View {
             }
             .listStyle(.plain)
             .navigationTitle("Expenses Logs")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {

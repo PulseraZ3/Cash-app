@@ -57,6 +57,10 @@ final class FormularioMovimientoViewModel: ObservableObject {
                     cuenta: cuenta,
                     nota: notas ?? "" 
                 )
+                NotificationCenter.default.post(
+                            name: .movimientoGuardado,
+                            object: nil
+                        )
                 print("movimiento guardado")
             } catch let error as NSError {
                 print("Error al guardar movimiento: \(error), \(error.userInfo)")
