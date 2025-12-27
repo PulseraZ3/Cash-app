@@ -2,77 +2,96 @@ import SwiftUI
 import CoreData
 
 struct ExpensesView: View {
+    
     @Environment(\.managedObjectContext) private var context
-    @Environment(\.dismiss) var dismiss
     
-    @State private var showingFormulario = false
+    @State private var movimientoSeleccionado: Movimiento?
+    @State private var crearNuevo = false
     
-    // Lista de movimientos
-    @State private var movimientos: [Movimiento] = []
-
-    // Repositorio para manejar CoreData
-    private var repository: MovimientoRepository
-
-    init(context: NSManagedObjectContext) {
-        self.repository = MovimientoRepository(context: context)
-    }
-
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(key: "fecha", ascending: false)],
+        animation: .default
+    )
+    private var movimientos: FetchedResults<Movimiento>
+    
     var body: some View {
         NavigationStack {
-            
             List {
-                ForEach(movimientos, id: \.id) { movimiento in
-                    HStack {
-                        if let icono = movimiento.categoria?.icon {
-                                Image(systemName: icono)
-                                    .resizable()
-                                    .frame(width: 24, height: 24)
-                                    .foregroundColor(.blue) // o lo que quieras
-                            }
-                        VStack(alignment: .leading) {
-                            Text(movimiento.nota ?? "Sin nombre")
-                                .font(.subheadline)
-                                .foregroundColor(.black).padding(.bottom, 5)
-                            Text(movimiento.fecha.map{
-                                let formato = RelativeDateTimeFormatter()
-                                formato.unitsStyle = .full
-                                formato.locale = Locale(identifier: "es")
-                                return formato.localizedString(for: $0, relativeTo: Date())
-                            } ?? "Sin fecha")
-                            .font(.subheadline)
-                            .foregroundStyle(.gray)
-                        }
-                        Spacer()
-                        Text("S/\(movimiento.monto, specifier: "%.2f")") // formato de cadenas para double = %.2f
-                            .font(.headline)
-                            .foregroundColor(movimiento.tipo?.nombre == "Gasto" ? .red : .green)
+                ForEach(movimientos) { movimiento in
+                    Button {
+                        movimientoSeleccionado = movimiento 
+                    } label: {
+                        filaMovimiento(movimiento)
                     }
-                    .padding(.vertical, 4)
-                    .listRowSeparator(.hidden)
+                    .buttonStyle(.plain)
                 }
             }
-            .listStyle(.plain)
             .navigationTitle("Expenses Logs")
-            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        showingFormulario = true
-                    }) {
-                        Image(systemName: "plus")
-                    }
+                Button {
+                    crearNuevo = true // CREAR
+                } label: {
+                    Image(systemName: "plus")
                 }
             }
-            .sheet(isPresented: $showingFormulario, onDismiss: loadMovimientos) {
-                FormularioMovimientoView(context: context)
-                    .presentationDetents([.medium, .large], selection: .constant(.large))
-                    .presentationDragIndicator(.hidden)
+            
+            // 👉 EDITAR
+            .sheet(item: $movimientoSeleccionado) { movimiento in
+                FormularioMovimientoView(
+                    context: context,
+                    movimiento: movimiento
+                )
             }
-            .onAppear(perform: loadMovimientos)
+            
+            // 👉 CREAR
+            .sheet(isPresented: $crearNuevo) {
+                FormularioMovimientoView(
+                    context: context,
+                    movimiento: nil
+                )
+            }
         }
     }
-
-    private func loadMovimientos() {
-        movimientos = repository.getAllMovimientos()
+    
+    private func filaMovimiento(_ movimiento: Movimiento) -> some View {
+        HStack {
+            // Icono de categoría
+            if let icono = movimiento.categoria?.icon {
+                Image(systemName: icono)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 24, height: 24)
+                    .foregroundColor(.blue)
+            }
+            
+            // Información principal
+            VStack(alignment: .leading, spacing: 4) {
+                Text(
+                    movimiento.nota?.isEmpty == false
+                    ? movimiento.nota!
+                    : "Sin nombre"
+                )
+                .font(.subheadline)
+                .foregroundColor(.primary)
+                
+                if let fecha = movimiento.fecha {
+                    Text(fecha, style: .relative)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+            
+            Spacer()
+            
+            // Monto
+            Text("S/ \(movimiento.monto, specifier: "%.2f")")
+                .font(.headline)
+                .foregroundColor(
+                    movimiento.tipo?.nombre == "Gasto"
+                    ? .red
+                    : .green
+                )
+        }
+        .padding(.vertical, 6)
     }
 }

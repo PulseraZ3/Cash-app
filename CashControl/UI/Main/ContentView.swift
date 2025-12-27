@@ -15,7 +15,7 @@ struct ContentView: View {
                 .tabItem{
                     Label("Dashboard", systemImage: "chart.pie")
                 }
-            ExpensesView(context: context)
+            ExpensesView()
                 .tabItem{
                     Label("Logs", systemImage: "tray")
                 }

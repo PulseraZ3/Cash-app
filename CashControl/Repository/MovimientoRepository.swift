@@ -17,6 +17,17 @@ protocol MovimientoRepositoryProtocol {
         cuenta: Cuenta,
         nota: String?
     ) throws
+    func actualizarMovimiento(
+        movimiento: Movimiento,
+        monto: Double,
+        fecha: Date,
+        categoria: Categoria,
+        tipo: TipoMovimiento,
+        cuenta: Cuenta,
+        nota: String?
+    ) throws
+
+    func eliminarMovimiento(_ movimiento: Movimiento) throws
 }
 
 final class MovimientoRepository: MovimientoRepositoryProtocol {
@@ -71,4 +82,28 @@ final class MovimientoRepository: MovimientoRepositoryProtocol {
         let movimiento = (try? context.fetch(request)) ?? []
         return movimiento.reduce(0) { $0 + $1.monto }
     }
+    func actualizarMovimiento(
+        movimiento: Movimiento,
+        monto: Double,
+        fecha: Date,
+        categoria: Categoria,
+        tipo: TipoMovimiento,
+        cuenta: Cuenta,
+        nota: String?
+    ) throws {
+
+        movimiento.monto = monto
+        movimiento.fecha = fecha
+        movimiento.categoria = categoria
+        movimiento.tipo = tipo
+        movimiento.cuenta = cuenta
+        movimiento.nota = nota ?? ""
+
+        try context.save()
+    }
+    func eliminarMovimiento(_ movimiento: Movimiento) throws {
+        context.delete(movimiento)
+        try context.save()
+    }
+    
 }
